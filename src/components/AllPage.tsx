@@ -1,3 +1,13 @@
-const AllPAge = () => <>All Page!!</>;
+import { usePosts } from '../queries/posts';
 
-export default AllPAge;
+const AllPage = () => {
+  const posts = usePosts();
+
+  if (posts.isLoading) {
+    return <>loading...</>;
+  }
+
+  return <>{JSON.stringify(posts.data)}</>;
+};
+
+export default AllPage;
