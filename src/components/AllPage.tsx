@@ -1,4 +1,5 @@
 import { usePosts } from '../queries/posts';
+import PostList from './PostList';
 
 const AllPage = () => {
   const posts = usePosts();
@@ -7,7 +8,11 @@ const AllPage = () => {
     return <>loading...</>;
   }
 
-  return <>{JSON.stringify(posts.data)}</>;
+  return (
+    <>
+      <PostList posts={posts.data?.data.children || []} />
+    </>
+  );
 };
 
 export default AllPage;

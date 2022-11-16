@@ -1,0 +1,28 @@
+.RichTextEmoji {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: relative;
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    vertical-align: middle;
+}
+
+.RichTextContainer {
+    background-color: #edeff1;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    border-radius: 2px;
+    display: inline-block;
+    height: 16px;
+    margin-left: 0;
+    margin-right: 5px;
+    overflow: hidden;
+    padding: 0 4px;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    white-space: nowrap;
+    max-width: none;
+}
