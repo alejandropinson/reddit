@@ -3,6 +3,8 @@ import { Box, IconButton, Link, Typography } from '@mui/material';
 import { formatDistance } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { Data2 } from '../models/PostsData';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { selectVote, vote, VoteDir } from '../store/votesSlice';
 import LinkButton from './LinkButton';
 import './PostListItem.css';
 
@@ -68,6 +70,8 @@ export const RichText = ({ title, image, type, text }: RichTextProps) => {
 };
 
 const PostListItem = ({ index, post }: PostListItemProps) => {
+  const userVote = useAppSelector(selectVote(post.id));
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const navigateToPost = (post: Data2) => {
@@ -80,6 +84,11 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
     }
   };
 
+  const votePost = (dir: VoteDir) => {
+    const voteDir = userVote === dir ? VoteDir.Reset : dir;
+    dispatch(vote({ id: post.id, dir: voteDir }));
+  };
+
   return (
     <Box p={1} display='flex' alignItems='center'>
       <Box p={1}>
@@ -88,14 +97,18 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
         </Typography>
       </Box>
       <Box display='flex' flexDirection='column' alignItems='center' mr={1}>
-        <IconButton>
-          <ExpandLess />
+        <IconButton onClick={() => votePost(VoteDir.Upvote)}>
+          <ExpandLess
+            color={userVote === VoteDir.Upvote ? 'primary' : undefined}
+          />
         </IconButton>
         <Typography color='text.secondary' fontWeight={700}>
-          {numberFormatter.format(post.ups)}
+          {numberFormatter.format(post.ups + (userVote || 0))}
         </Typography>
-        <IconButton>
-          <ExpandMore />
+        <IconButton onClick={() => votePost(VoteDir.Downvote)}>
+          <ExpandMore
+            color={userVote === VoteDir.Downvote ? 'primary' : undefined}
+          />
         </IconButton>
       </Box>
       {post.thumbnail && (
@@ -114,8 +127,9 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
           </Link>
           <Typography variant='caption'> ({post.domain})</Typography>
           <Box className='RichTextContainer'>
-            {post.link_flair_richtext.map((item) => (
+            {post.link_flair_richtext.map((item, index) => (
               <RichText
+                key={index}
                 type={item.e}
                 title={item.a}
                 image={item.u}

@@ -8,11 +8,7 @@ const AllPage = () => {
     return <>loading...</>;
   }
 
-  return (
-    <>
-      <PostList posts={posts.data?.data.children || []} />
-    </>
-  );
+  return <PostList posts={posts.data?.data.children || []} />;
 };
 
 export default AllPage;

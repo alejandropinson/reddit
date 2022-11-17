@@ -75,8 +75,9 @@ const PostPage = () => {
               <Box p={1}>
                 {post.selftext}
                 {post.preview &&
-                  post.preview.images.map((image) => (
+                  post.preview.images.map((image, index) => (
                     <img
+                      key={index}
                       alt={post.title}
                       src={image.source.url}
                       width={image.source.width}
@@ -88,8 +89,8 @@ const PostPage = () => {
           </Box>
         </Paper>
       </Box>
-      {comments.map(({ data: comment }) => (
-        <Box mb={2}>
+      {comments.map(({ data: comment }, index) => (
+        <Box mb={2} key={index}>
           <Comment comment={comment} />
         </Box>
       ))}

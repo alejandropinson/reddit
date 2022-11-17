@@ -8,7 +8,7 @@ interface PostListProps {
 const PostList = ({ posts }: PostListProps) => (
   <>
     {posts.map((post, index) => (
-      <PostListItem index={index + 1} post={post.data} />
+      <PostListItem key={index} index={index + 1} post={post.data} />
     ))}
   </>
 );
