@@ -1,7 +1,9 @@
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Box, IconButton, Link, Typography } from '@mui/material';
 import { formatDistance } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 import { Data2 } from '../models/PostsData';
+import LinkButton from './LinkButton';
 import './PostListItem.css';
 
 interface PostListItemProps {
@@ -18,6 +20,36 @@ interface RichTextProps {
   text: string;
 }
 
+interface ThumbnailProps {
+  title: string;
+  thumbnail: string;
+  onClick: () => void;
+}
+
+export const Thumbnail = ({ title, thumbnail, onClick }: ThumbnailProps) => {
+  switch (thumbnail) {
+    case 'default':
+      return (
+        <Link
+          component='button'
+          className='DefaultThumbnail'
+          onClick={onClick}
+        ></Link>
+      );
+
+    default:
+      return (
+        <img
+          src={thumbnail}
+          height={56}
+          width={70}
+          alt={`${title} thumbnail`}
+          onClick={onClick}
+        />
+      );
+  }
+};
+
 export const RichText = ({ title, image, type, text }: RichTextProps) => {
   switch (type) {
     case 'emoji':
@@ -26,82 +58,92 @@ export const RichText = ({ title, image, type, text }: RichTextProps) => {
           className='RichTextEmoji'
           title={title}
           style={{ backgroundImage: `url(${image})` }}
-        ></span>
+        />
       );
     case 'text':
       return <span>{text}</span>;
     default:
-      return <span></span>;
+      return <span />;
   }
 };
 
-const PostListItem = ({ index, post }: PostListItemProps) => (
-  <Box display='flex'>
-    {index}
-    <Box display='flex' flexDirection='column' alignItems='center'>
-      <IconButton>
-        <ArrowUpward />
-      </IconButton>
-      {numberFormatter.format(post.ups)}
-      <IconButton>
-        <ArrowDownward />
-      </IconButton>
-    </Box>
-    <img
-      src={post.thumbnail}
-      height={post.thumbnail_height}
-      width={post.thumbnail_width}
-      alt={post.title}
-    />
-    <Box>
-      <Box>
-        <Link href={post.url}>{post.title}</Link>
-        <Typography variant='caption'> ({post.domain})</Typography>
-        <Box className='RichTextContainer'>
-          {post.link_flair_richtext.map((item) => (
-            <RichText
-              type={item.e}
-              title={item.a}
-              image={item.u}
-              text={item.t}
-            />
-          ))}
-        </Box>
-      </Box>
-      <Box>
-        <Typography variant='caption'>
-          submitted{' '}
-          {formatDistance(new Date(post.created * 1000), new Date(), {
-            addSuffix: true,
-          })}{' '}
-          by {post.author} to {post.subreddit_name_prefixed}
-        </Typography>
-        <Box>
-          <Link href='#' variant='caption'>
-            {post.num_comments} comments
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            share
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            save
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            hide
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            give award
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            repost
-          </Link>{' '}
-          <Link href='#' variant='caption'>
-            crosspost
-          </Link>
-        </Box>
-      </Box>
-    </Box>
-  </Box>
-);
+const PostListItem = ({ index, post }: PostListItemProps) => {
+  const navigate = useNavigate();
 
+  const navigateToPost = (post: Data2) => {
+    const { url, is_reddit_media_domain, permalink } = post;
+
+    if (is_reddit_media_domain) {
+      navigate(permalink.replace('/r', ''));
+    } else {
+      window.open(url);
+    }
+  };
+
+  return (
+    <Box p={1} display='flex' alignItems='center'>
+      <Box p={1}>
+        <Typography color='text.secondary' fontWeight={700}>
+          {index}
+        </Typography>
+      </Box>
+      <Box display='flex' flexDirection='column' alignItems='center' mr={1}>
+        <IconButton>
+          <ExpandLess />
+        </IconButton>
+        <Typography color='text.secondary' fontWeight={700}>
+          {numberFormatter.format(post.ups)}
+        </Typography>
+        <IconButton>
+          <ExpandMore />
+        </IconButton>
+      </Box>
+      {post.thumbnail && (
+        <Box mr={1}>
+          <Thumbnail
+            title={post.title}
+            thumbnail={post.thumbnail}
+            onClick={() => navigateToPost(post)}
+          />
+        </Box>
+      )}
+      <Box display='flex' flexDirection='column'>
+        <Box>
+          <Link component='button' onClick={() => navigateToPost(post)}>
+            {post.title}
+          </Link>
+          <Typography variant='caption'> ({post.domain})</Typography>
+          <Box className='RichTextContainer'>
+            {post.link_flair_richtext.map((item) => (
+              <RichText
+                type={item.e}
+                title={item.a}
+                image={item.u}
+                text={item.t}
+              />
+            ))}
+          </Box>
+        </Box>
+        <Box>
+          <Typography variant='caption'>
+            submitted{' '}
+            {formatDistance(new Date(post.created * 1000), new Date(), {
+              addSuffix: true,
+            })}{' '}
+            by {post.author} to {post.subreddit_name_prefixed}
+          </Typography>
+          <Box display='flex'>
+            <LinkButton>{post.num_comments} comments</LinkButton>
+            <LinkButton>share</LinkButton>
+            <LinkButton>save</LinkButton>
+            <LinkButton>hide</LinkButton>
+            <LinkButton>give award</LinkButton>
+            <LinkButton>repost</LinkButton>
+            <LinkButton>crosspost</LinkButton>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 export default PostListItem;

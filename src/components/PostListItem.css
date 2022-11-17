@@ -26,3 +26,13 @@
     white-space: nowrap;
     max-width: none;
 }
+
+.DefaultThumbnail {
+    background-image: url("https://www.redditstatic.com/sprite-reddit.WNsgmt4b0aY.png");
+    background-position: 0px -1099px;
+    background-repeat: no-repeat;
+    height: 50px;
+    flex: 0 0 70px;
+    margin-right: 10px;
+    width: 70px;
+  }

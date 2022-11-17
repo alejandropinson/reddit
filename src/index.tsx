@@ -15,12 +15,13 @@ const queryClient = new QueryClient({
 });
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#000',
-    },
-    secondary: {
-      main: '#fff',
+  components: {
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          textDecoration: 'none',
+        },
+      },
     },
   },
 });

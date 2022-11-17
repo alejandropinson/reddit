@@ -10,10 +10,10 @@ export const fetchAllPosts = async (): Promise<PostsRootObject> => {
   return response.data;
 };
 
-export const fetchPost = async (path: string): Promise<PostRootObject> => {
+export const fetchPost = async (path: string): Promise<PostRootObject[]> => {
   const trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
-  const response = await axios.get<PostRootObject>(
+  const response = await axios.get<PostRootObject[]>(
     `https://www.reddit.com/r/${trimmedPath}.json`
   );
 
