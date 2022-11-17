@@ -1,7 +1,10 @@
 import { Box, Link, Paper, Typography } from '@mui/material';
 import { formatDistance } from 'date-fns';
+import { decode } from 'html-entities';
 import { useLocation } from 'react-router-dom';
 import { usePost } from '../queries/posts';
+import { useAppSelector } from '../store/hooks';
+import { selectVote } from '../store/votesSlice';
 import Comment from './Comment';
 
 const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' });
@@ -9,9 +12,9 @@ const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' });
 const PostPage = () => {
   const location = useLocation();
   const { pathname } = location;
-
   const { data, error, isLoading } = usePost(pathname);
   const post = data?.[0].data.children[0].data;
+  const userVote = useAppSelector(selectVote(post?.id || ''));
   const comments = data?.[1].data.children;
 
   if (isLoading) {
@@ -29,9 +32,10 @@ const PostPage = () => {
           <Box p={1} display='flex' bgcolor='#ffffff'>
             <Box p={1}>
               <Typography color='text.secondary' fontWeight={700}>
-                {numberFormatter.format(post.ups)}
+                {numberFormatter.format(post.ups + (userVote || 0))}
               </Typography>
             </Box>
+
             <Box>
               <Box display='flex'>
                 {post.thumbnail && (
@@ -73,7 +77,11 @@ const PostPage = () => {
                 </Box>
               </Box>
               <Box p={1}>
-                {post.selftext}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: decode(post.selftext_html),
+                  }}
+                />
                 {post.preview &&
                   post.preview.images.map((image, index) => (
                     <img

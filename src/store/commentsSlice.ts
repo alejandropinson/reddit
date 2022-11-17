@@ -32,6 +32,6 @@ export const commentsSlice = createSlice({
 export const { postComment } = commentsSlice.actions;
 
 export const selectComments = (id: string) => (state: RootState) =>
-  state.comments.comments[id] || [];
+  state.comments.comments[id];
 
 export default commentsSlice.reducer;

@@ -90,14 +90,14 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
   };
 
   return (
-    <Box p={1} display='flex' alignItems='center'>
+    <Box p={1} display='flex'>
       <Box p={1}>
         <Typography color='text.secondary' fontWeight={700}>
           {index}
         </Typography>
       </Box>
       <Box display='flex' flexDirection='column' alignItems='center' mr={1}>
-        <IconButton onClick={() => votePost(VoteDir.Upvote)}>
+        <IconButton onClick={() => votePost(VoteDir.Upvote)} size='small'>
           <ExpandLess
             color={userVote === VoteDir.Upvote ? 'primary' : undefined}
           />
@@ -105,7 +105,7 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
         <Typography color='text.secondary' fontWeight={700}>
           {numberFormatter.format(post.ups + (userVote || 0))}
         </Typography>
-        <IconButton onClick={() => votePost(VoteDir.Downvote)}>
+        <IconButton onClick={() => votePost(VoteDir.Downvote)} size='small'>
           <ExpandMore
             color={userVote === VoteDir.Downvote ? 'primary' : undefined}
           />
@@ -122,7 +122,11 @@ const PostListItem = ({ index, post }: PostListItemProps) => {
       )}
       <Box display='flex' flexDirection='column'>
         <Box>
-          <Link component='button' onClick={() => navigateToPost(post)}>
+          <Link
+            component='button'
+            onClick={() => navigateToPost(post)}
+            textAlign='left'
+          >
             {post.title}
           </Link>
           <Typography variant='caption'> ({post.domain})</Typography>

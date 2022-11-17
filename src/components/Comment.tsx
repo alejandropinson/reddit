@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { formatDistance } from 'date-fns';
+import { decode } from 'html-entities';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Child, Data2 } from '../models/PostData';
@@ -27,7 +28,8 @@ const Comment = ({ comment, indent = 0 }: CommentProps) => {
   const [showReplyBox, setShowReplyBox] = useState(false);
   const [reply, setReply] = useState('');
   const userVote = useAppSelector(selectVote(comment.id));
-  const userComments = useAppSelector(selectComments(comment.id)) as Data2[];
+  const userComments = (useAppSelector(selectComments(comment.id)) ||
+    []) as Data2[];
   const dispatch = useAppDispatch();
 
   replies = [
@@ -125,7 +127,11 @@ const Comment = ({ comment, indent = 0 }: CommentProps) => {
             </Box>
 
             <Box display={hidden ? 'none' : 'block'}>
-              {comment.body}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: decode(comment.body_html),
+                }}
+              />
               <Box display='flex' mb={1}>
                 <LinkButton>permalink</LinkButton>
                 <LinkButton>source</LinkButton>

@@ -32,4 +32,6 @@ export const { vote } = votesSlice.actions;
 export const selectVote = (id: string) => (state: RootState) =>
   state.votes.votes[id];
 
+export const selectVotes = (state: RootState) => state.votes;
+
 export default votesSlice.reducer;
